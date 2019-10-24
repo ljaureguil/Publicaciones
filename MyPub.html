@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src='file:///android_asset/app.js'></script>
+
+<head>
+    <title>three.js webgl - materials - dynamic cube reflection</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0px;
+            overflow: hidden;
+        }
+        #info {
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            color: #ffffff;
+            padding: 5px;
+            font-family: Monospace;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+        }
+        a {
+            color: #ffffff;
+        }
+        #ta {
+            width: 100%;
+            height: 5%;
+            background: #800000;
+color:white;
+        }
+    </style>
+</head>
+
+<body>
+    <textarea id="ta" placeholder="Write something here"></textarea>
+    <button onclick="settext()">Set Text</button>
+    <br>
+
+    <button onclick="takeScreenshot()">take picture</button>
+    <script src=""></script>
+    <script src=""></script>
+    <script src=""></script>
+    <script src=""></script>
+
+    <script>
+        var txttexist = false;
+        /*
+        //https://raw.githubusercontent.com/mrdoob/three.js/dev/build/three.js
+      http://threejs.org/build/three.js
+ https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js
+   
+   https://jsfiddle.net/jauregui/Lm7habco/2/
+   
+   
+   
+       */
+        eta = document.getElementById("ta");
+        st1()
+        function st1() {
+            //I include this link of three.js that I got like 8 months ago and seems to work fine.
+            //https://raw.githubusercontent.com/ljaureguil/My-Library/master/three.js
+            new loadscript("https://cdn.rawgit.com/mrdoob/three.js/master/build/three.js", st2);
+            // Tryin this link doesn't work -It seems to be newer version that the one I've been using
+            //  https://cdn.rawgit.com/mrdoob/three.js/master/build/three.js
+            //      new loadscript("https://cdn.rawgit.com/mrdoob/three.js/master/build/three.js", st2);
+        }
+        function st2() { // alert("seems to be ok... states2");
+            loadscript("https://raw.githubusercontent.com/ljaureguil/My-Library/master/MyLib.js", st3);
+            //https://raw.githubusercontent.com/ljaureguil/My-Library/master/MyLib.js
+        }
+       function st3() { //alert("seems to be ok... states3");
+            new loadscript("https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js", st4);
+        }
+        function st3() { //alert("seems to be ok... states3");
+            new loadscript("https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/DeviceOrientationControls.js", aa);
+        }
+        function loadscript(url, callback) {
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            var code = loadDoc(url);
+            try {
+                s.appendChild(document.createTextNode(code));
+                document.body.appendChild(s); //
+                callback();
+            } catch (e) {
+                s.text = code;
+                document.body.appendChild(s);
+                callback();
+            }
+        }
+        var camera, scene, renderer, txt;
+        var cube, sphere, torus, material;
+        var count = 0,
+            cubeCamera1, cubeCamera2, txt;
+        var lon = 0,
+            lat = 0;
+        var phi = 0,
+            theta = 0;
+        function init(texture) {
+            ljl = new LJL();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 5000);
+            camera.position.x = 100;
+            camera.position.y = 100;
+            camera.position.z = 100;
+            scene = new THREE.Scene();
+            var mesh = new THREE.Mesh(new THREE.SphereBufferGeometry(2500, 32, 16), new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: true
+            }));
+            mesh.geometry.scale(-1, 1, 1);
+            mesh.material.opacity = 1; //opacity=.5;
+            scene.add(mesh);
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            cubeCamera1 = new THREE.CubeCamera(1, 5000, 256);
+            cubeCamera1.renderTarget.texture.generateMipmaps = true;
+            cubeCamera1.renderTarget.texture.minFilter = THREE.LinearMipMapLinearFilter;
+            scene.add(cubeCamera1);
+            document.body.appendChild(renderer.domElement);
+            material = new THREE.MeshBasicMaterial({
+                envMap: cubeCamera1.renderTarget
+            });
+//            controls = new THREE.TrackballControls(camera, renderer.domElement);
+controls = new THREE.DeviceOrientationControls( camera );
+            var directionalLight = new THREE.DirectionalLight(0xffffff, .9, 1000);
+            directionalLight.position.y = 400;
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+            var light = new THREE.AmbientLight(0xffffff); // soft white light
+            scene.add(light);
+            chromeMaterial = ljl.chromeMaterial(cubeCamera1, 0x00ff60);
+             parameters = {
+                size: 54,
+                height: 30,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 5,
+                bevelSize:5,
+                bevelSegments: 15
+            }
+            ljl.Texto("Grupo 209\n           ===", 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
+                chromeMaterial,
+                parameters,
+                function(ob) {
+                    txttexist = true;
+                    txtt = ob;
+                  //  scene.add(txtt);
+                    animate()
+                });
+        }
+        function onWindowResized(event) {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        }
+        function onDocumentMouseDown(event) {
+            event.preventDefault();
+            onPointerDownPointerX = event.clientX;
+            onPointerDownPointerY = event.clientY;
+            onPointerDownLon = lon;
+            onPointerDownLat = lat;
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            document.addEventListener('mouseup', onDocumentMouseUp, false);
+        }
+        function onDocumentMouseMove(event) {
+            lon = (event.clientX - onPointerDownPointerX) * 0.1 + onPointerDownLon;
+            lat = (event.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+        }
+        function onDocumentMouseUp(event) {
+            document.removeEventListener('mousemove', onDocumentMouseMove, false);
+            document.removeEventListener('mouseup', onDocumentMouseUp, false);
+        }
+        function onDocumentMouseWheel(event) {
+            camera.fov += (event.deltaY * 0.05);
+            camera.updateProjectionMatrix();
+        }
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+        }
+        function render() {
+            var time = Date.now();
+            if (txttexist) {
+                txtt.position.x = Math.cos(time * 0.00001 + 10) * 430;
+                txtt.position.z = Math.sin(time * 0.00001 + 10) * 430;
+                txtt.visible = false;
+                cubeCamera1.update(renderer, scene);
+                txtt.visible = true;
+            }
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        function takeScreenshot() {
+            var w = window.open('', '');
+            w.document.title = "Screenshot";
+            //w.document.body.style.backgroundColor = "red";
+            var img = new Image();
+            // Without 'preserveDrawingBuffer' set to true, we must render now
+            renderer.render(scene, camera);
+            img.src = renderer.domElement.toDataURL();
+            w.document.body.appendChild(img);
+        }
+        function aa() {
+            textureLoader = new THREE.TextureLoader();
+            textureLoader.load("https://farm1.staticflickr.com/661/21230969582_5c642e4b0e_c.jpg", function(texture) {
+                texture.mapping = THREE.UVMapping;
+                init(texture);
+            });
+        }
+        function loadDoc(url) { //alert(url)
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", url, false);
+            xhttp.send();
+            //     app.ShowPopup(xhttp.responseText)
+            return xhttp.responseText;
+        }
+        function settext() {
+            ljl.Texto(eta.value, 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
+                chromeMaterial,
+                parameters,
+                function(ob) {
+scene.remove(txtt);
+                    txttexist = true;//alert(txtt.geometry);
+                    txtt = ob;
+                      scene.add(ob);
+                    animate()
+                });
+        }
+    </script>
+
+</body>
+
+</html>
