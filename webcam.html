@@ -1,0 +1,73 @@
+<html>
+ <script src='file:///android_asset/app.js'></script>
+<style>
+body{
+  background:url(https://media.gettyimages.com/photos/closeup-of-details-on-a-circuit-board-picture-id172965743?s=612x612);
+background-size:100% 100%;
+}
+ #todo{
+  width:100%;
+  height:100%;background-size:100% 100%;
+
+ }
+
+#im{
+position:absolute;
+ width:100%;
+ height:100%;
+left:0px;background-size:100% 100%;
+top:0px;
+background:url(https://www.freeiconspng.com/uploads/broken-png-12.png);
+background-size:100% 100%;
+opacity:.5;
+font-size:80px;
+color:white;
+font-weight:bold;
+ }
+ #video{
+     width:100%;
+     height:100%;
+     box-shadow:inset 0px 0px 10px 5px blue;
+     border-radius:30px;
+     opacity:.75;
+ }
+ 
+</style>
+	<video id="video" autoplay style="display:block"></video>
+<div id="todo">
+ 
+<div id="im"  onclick='getPro()'>Get Pro Version...
+</div>div>
+
+</div>
+
+<script>
+function getPro(){
+ 
+ //alert("jjjj");
+    app.OpenUrl("https://play.google.com/store/apps/details?id=com.jauregui.quicktapemeasurement");
+}
+
+
+				video = document.getElementById( 'video' );
+
+if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+					var constraints = { video: { width: 1280, height: 720, facingMode: 'user' } };//environment
+					navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
+						// apply the stream to the video element used in the texture
+						video.srcObject = stream;
+						video.play();
+					} ).catch( function ( error ) {
+						console.error( 'Unable to access the camera/webcam.', error );
+					} );
+				} else {
+					console.error( 'MediaDevices interface not available.' );
+				}
+	
+
+
+
+
+</script>
+
+ </html>
