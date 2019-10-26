@@ -1,1 +1,5 @@
 https://raw.githubusercontent.com/ljaureguil/Publicaciones/master/webcam.html
+
+https://www.w3schools.com/cssref/tryit.asp?filename=trycss3_background-size5
+
+https://threejs.org/examples/#webgl_materials_video_webcam
